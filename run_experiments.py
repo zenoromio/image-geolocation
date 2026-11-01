@@ -181,7 +181,7 @@ print("Model loaded.")
 
 # ── Core functions ─────────────────────────────────────────────────────────────
 def get_score(img_pil):
-    inputs = processor(text=choices, images=img_pil, return_tensors="pt", padding=True).to(device)
+    inputs = processor(text=choices, images=img_pil, return_tensors="pt", padding=True).to( )
     with torch.no_grad():
         logits = model(**inputs).logits_per_image
     return logits.softmax(dim=1)[0].cpu()

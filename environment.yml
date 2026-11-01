@@ -2,7 +2,7 @@ name: stclip
 channels:
   - conda-forge
 dependencies:
-  - python=3.11
+  - python=3.12
   - pip
   - pip:
       # PyTorch from pip: on Linux the wheel bundles CUDA, on macOS it supports MPS
