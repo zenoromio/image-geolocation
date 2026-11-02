@@ -2,7 +2,7 @@
 
 Runs [StreetCLIP](https://huggingface.co/geolocal/StreetCLIP) zero-shot country classification on a folder of street-view images and, for each image, computes:
 
-- **prediction & confidence** — top country out of 196 candidates
+- **prediction & confidence** — top country out of 193 candidates
 - **Gini** — how concentrated the occlusion heatmap is (7×7 grid); high = the decision relies on a few regions
 - **CF-k** — how many of the most important patches must be greyed out before the prediction changes
 - **error_km** — distance between the centroids of the true and predicted country (0 if correct)
@@ -28,7 +28,7 @@ stclip/
 ├── run_experiments.py
 ├── environment.yml
 ├── images/              ← your dataset (not included)
-│   ├── Algeria/
+│   ├── Chile/
 │   │   ├── img001.jpg
 │   │   └── ...
 │   ├── South_Africa/

@@ -1,6 +1,5 @@
 import os
 
-# Must be set before importing transformers, otherwise it is ignored.
 # Model is cached inside the project folder: stclip/hf_cache/
 os.environ.setdefault(
     "HF_HOME", os.path.join(os.path.dirname(os.path.abspath(__file__)), "hf_cache")
@@ -181,7 +180,7 @@ print("Model loaded.")
 
 # ── Core functions ─────────────────────────────────────────────────────────────
 def get_score(img_pil):
-    inputs = processor(text=choices, images=img_pil, return_tensors="pt", padding=True).to( )
+    inputs = processor(text=choices, images=img_pil, return_tensors="pt", padding=True).to(device)
     with torch.no_grad():
         logits = model(**inputs).logits_per_image
     return logits.softmax(dim=1)[0].cpu()
