@@ -52,13 +52,12 @@ stclip/
 `dataset_coordinates.csv` lists the location (`lat`, `lon`) and camera direction (`heading`) of every image in our dataset: 500 images for each of 50 countries. To download the same images:
 
 ```bash
-export STREETVIEW_API_KEY="your_key_here"
 python download_streetview.py dataset_coordinates.csv --out streetview_dataset_fixed --size 336x336
 ```
 
-This requires a Google Maps Platform API key with the **Street View Static API** enabled. Metadata requests are free; the first 10,000 image downloads per month are free, after that Google charges per image (see [Google's pricing](https://developers.google.com/maps/billing-and-pricing/pricing)).
+This requires a Google Maps Platform API key with the **Street View Static API** enabled.
 
-The script is safe to interrupt: rerun the same command and it continues where it stopped. Every request is logged in `streetview_dataset_fixed/download_log.csv`, including the panorama ID and capture date.
+The script is safe to interrupt: rerun the same command and it continues where it stopped thanks to a checkpoint system.
 
 The images are saved in `streetview_dataset_fixed/images/<Country>/`. Move that folder into the project so `run_experiments.py` finds it:
 
@@ -121,7 +120,6 @@ How it works:
 - Country borders come from [Natural Earth](https://www.naturalearthdata.com/) (1:10m Admin 0 – Countries).
 - Parts of a country more than 1,000 km from its mainland are ignored (e.g. French Guiana for France), while nearby islands are kept (e.g. Sicily for Italy).
 - Distances are the shortest **border-to-border** distances, measured on the globe (no map projection), so routes across oceans and the date line are correct.
-- Only sovereign countries are counted in the rank. A predicted territory (e.g. Aruba) is still measured at its real location.
 
 Use it from Python:
 
