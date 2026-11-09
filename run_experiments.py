@@ -252,10 +252,24 @@ def save_progress(done_set):
         json.dump(sorted(done_set), f)
     tmp.replace(PROGRESS_FILE)  # atomic: a crash mid-write can't corrupt the file
 
+RESULT_COLUMNS = ["image", "truth", "predicted", "correct", "confidence",
+                  "gini", "cf_k", "error_km", "importance"]
+
 def append_result(row):
-    pd.DataFrame([row]).to_csv(
+    # fixed column order, so appended rows always line up with the header
+    pd.DataFrame([row], columns=RESULT_COLUMNS).to_csv(
         RESULTS_FILE, mode="a", header=not RESULTS_FILE.exists(), index=False
     )
+
+def ensure_importance_column():
+    """A results.csv written by the old version has no 'importance' column:
+    add it (empty for those rows), so new rows don't get shifted columns."""
+    if RESULTS_FILE.exists():
+        df = pd.read_csv(RESULTS_FILE)
+        if "importance" not in df.columns:
+            df["importance"] = ""
+            df[RESULT_COLUMNS].to_csv(RESULTS_FILE, index=False)
+            print(f"Added empty 'importance' column to {len(df)} existing rows.")
 
 def merge_old_batch_files():
     """One-off: fold existing progress_*.json / results_*.csv into the single files,
@@ -280,6 +294,7 @@ def merge_old_batch_files():
 # ── Main ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     merge_old_batch_files()
+    ensure_importance_column()
     done   = load_progress()
     images = find_images()
 
@@ -317,6 +332,9 @@ if __name__ == "__main__":
                 "gini":       round(g, 4),
                 "cf_k":       cf,
                 "error_km":   err_km if err_km is not None else "",
+                # the 49 occlusion importances the Gini is computed from,
+                # row by row (top-left first), as a list
+                "importance": json.dumps(np.round(heatmap.flatten(), 6).tolist()),
             })
             done.add(img_path)
             save_progress(done)
