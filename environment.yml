@@ -13,3 +13,9 @@ dependencies:
       - numpy
       - pandas
       - geopy
+      - tqdm
+      - shapely
+      - requests
+      - geopandas
+      - pyproj
+      - scipy

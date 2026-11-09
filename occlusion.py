@@ -9,8 +9,7 @@ model = CLIPModel.from_pretrained("geolocal/StreetCLIP", attn_implementation="ea
 processor = CLIPProcessor.from_pretrained("geolocal/StreetCLIP")
 
 # choose and resize image
-#image = Image.open("PATH_TO_IMAGE")
-image = Image.open("images/Chile/Chile_0b32c6d6.jpg")
+image = Image.open("PATH_TO_IMAGE")
 image_336 = image.resize((336, 336))
 
 # all 193 available countries
