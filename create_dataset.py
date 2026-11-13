@@ -36,24 +36,20 @@ MAX_SNAP_KM    = 10.0      # reject if API snaps > 1km from sampled point
 MAX_ATTEMPTS   = 1000       # metadata attempts per valid image before giving up
 REQUEST_DELAY  = 0.05     # seconds between requests (stay under rate limits)
 
+# Add full correct name of country or error will be thrown
 COUNTRIES = [
     "Argentina", "Bangladesh", "Belgium", "Brazil", "Bulgaria",
     "Canada", "Chile", "Colombia", "Croatia", "Cyprus",
-    "Czech Republic", "Denmark", "Ecuador", "Finland", "France",
+    "Czechia", "Denmark", "Ecuador", "Finland", "France",
     "Georgia", "Germany", "Ghana", "Greece", "Hungary",
     "India", "Indonesia", "Israel", "Italy", "Japan",
     "Kenya", "Lithuania", "Malaysia", "Mexico", "Netherlands",
     "New Zealand", "Nigeria", "Norway", "Peru", "Philippines",
     "Poland", "Portugal", "Romania", "Russia", "South Africa",
     "Spain", "Sri Lanka", "Sweden", "Switzerland", "Taiwan",
-    "Thailand", "Turkey", "United States", "Uruguay", "Vietnam",
+    "Thailand", "Turkey", "United States of America", "Uruguay", "Vietnam"
 ]
 
-# Natural Earth uses slightly different names for some countries
-COUNTRY_NAME_MAP = {
-    "Czech Republic": "Czechia",
-    "South Korea":    "Republic of Korea"
-}
 
 # ─── HELPERS ──────────────────────────────────────────────────────────────────
 
@@ -161,14 +157,11 @@ def main():
         need = IMAGES_PER_COUNTRY - already_done
 
         # Resolve country name for Natural Earth
-        ne_name = COUNTRY_NAME_MAP.get(country, country)
-        match = world[world["ADMIN"] == ne_name]
+        match = world[world["ADMIN"] == country]
+
         if match.empty:
-            # Fuzzy fallback: partial match
-            match = world[world["ADMIN"].str.contains(ne_name.split()[0], case=False)]
-        if match.empty:
-            print(f"[{country}] WARNING: Could not find polygon in Natural Earth. Skipping.")
-            continue
+            raise ValueError(f"[{country}] '{country}' not found in Natural Earth. "
+                             f"Add the correct name to COUNTRY_NAME_MAP.")
 
         polygon = match.geometry.unary_union
 

@@ -4,4 +4,5 @@
 /images
 /progress
 /results
-/streetview_dataset
+/api_key.txt
+/create_map.py
